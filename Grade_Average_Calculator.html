@@ -1,0 +1,209 @@
+<html>
+    <head>
+
+        <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.bundle.js"></script>
+        <script>
+
+            $( document ).ready(function() {
+
+            $assignments_num = 8;
+            $assignment_names = ["OOP","OS","Agile 53 +  85","Analytics","Proj.M.","Structures", "AI"]             
+            $year_grades = [75,80,69,58,70,77,78]
+
+            $previous_future_average = 100;
+            $current_average_list = []
+            $min_future_list = []
+            $min_future_0_list = []
+
+            for ($year = 0; $year < $year_grades.length; $year++){
+
+                console.log($year)
+
+                $returned_grades = $year_grades.slice(0, $year+1);
+
+                console.log($returned_grades)
+
+                $grade = $returned_grades[$year]
+
+                $total = 0;
+                for (var i = 0; i < $returned_grades.length; i++) {
+                    $total += $returned_grades[i];
+                }
+
+                $average = ($total/$returned_grades.length)
+
+                $current_average_list.push($average);
+
+                $future_average = ((70*$assignments_num)-$total)/($assignments_num-$returned_grades.length)
+
+                $min_future_list.push($future_average)
+
+                $zero_future = $total / $assignments_num;
+
+                $min_future_0_list.push($zero_future);
+
+                $module_name = $assignment_names[$year];
+
+                $html = `<tr><td>` + $module_name + '</td><td>' + $grade + '</td><td>' + $average + '</td><td>' + $future_average + '</td><td>' + $zero_future + `
+                        </td><td>` + ($previous_future_average > $future_average) + '</td></tr>'
+
+                console.log($html)
+                $("#marks_table").append($html)
+
+                $previous_future_average = $future_average;
+            }
+            var ctx1 = document.getElementById('grade').getContext('2d');
+            var myLineChart = new Chart(ctx1, {
+                type: 'line',
+                data: {
+                    labels: $assignment_names,
+                        datasets: [{
+                            label: 'Grades',
+                            data: $year_grades,
+                            borderColor: [
+                                'rgba(255, 99, 132, 1)',
+                                'rgba(54, 162, 235, 1)',
+                                'rgba(255, 206, 86, 1)',
+                                'rgba(75, 192, 192, 1)',
+                                'rgba(153, 102, 255, 1)',
+                                'rgba(255, 159, 64, 1)'
+                            ],
+                            borderWidth: 3
+                        }],},
+                options: {scales: {
+            yAxes: [{
+                stacked: true
+            }]}}});
+                var ctx2 = document.getElementById('current_average').getContext('2d');
+            var myLineChart2 = new Chart(ctx2, {
+                type: 'line',
+                data: {
+                    labels: $assignment_names,
+                        datasets: [{
+                            label: 'Current Averages',
+                            data: $current_average_list,
+                            borderColor: [
+                                'rgba(255, 99, 132, 1)',
+                                'rgba(54, 162, 235, 1)',
+                                'rgba(255, 206, 86, 1)',
+                                'rgba(75, 192, 192, 1)',
+                                'rgba(153, 102, 255, 1)',
+                                'rgba(255, 159, 64, 1)'
+                            ],
+                            borderWidth: 3
+                        }],
+                },
+                options: {scales: {
+            yAxes: [{
+                stacked: true
+            }]}}});
+                var ctx3 = document.getElementById('min_future').getContext('2d');
+                var myLineChart3 = new Chart(ctx3, {
+                type: 'line',
+                data: {
+                    labels: $assignment_names,
+                        datasets: [{
+                            label: 'Minimum Future Grade',
+                            data: $min_future_list,
+                            borderColor: [
+                                'rgba(255, 99, 132, 1)',
+                                'rgba(54, 162, 235, 1)',
+                                'rgba(255, 206, 86, 1)',
+                                'rgba(75, 192, 192, 1)',
+                                'rgba(153, 102, 255, 1)',
+                                'rgba(255, 159, 64, 1)'
+                            ],
+                            borderWidth: 3
+                        }],
+                },
+                options: {scales: {
+            yAxes: [{
+                stacked: true
+            }]
+        }}});
+                var ctx4 = document.getElementById('future_0').getContext('2d');
+                var myLineChart4 = new Chart(ctx4, {
+                type: 'line',
+                data: {
+                    labels: $assignment_names,
+                        datasets: [{
+                            label: 'Future Grade being Zero',
+                            data: $min_future_0_list,
+                            borderColor: [
+                                'rgba(255, 99, 132, 1)',
+                                'rgba(54, 162, 235, 1)',
+                                'rgba(255, 206, 86, 1)',
+                                'rgba(75, 192, 192, 1)',
+                                'rgba(153, 102, 255, 1)',
+                                'rgba(255, 159, 64, 1)'
+                            ],
+                            borderWidth: 3
+                        }],
+                },
+                options: {scales: {
+            yAxes: [{
+                stacked: true
+            }]}}});})
+        </script>
+
+        <style>
+            div{
+                width: 400px;
+                height: 400px;
+            }
+        </style>
+    </head>
+    <body>
+        <table id="marks_table" border="4">
+            <tr>
+                <td>
+                    Subject
+                </td>
+                <td>
+                    Grade
+                </td>
+                <td>
+                    Current Average
+                </td>
+                <td>
+                    Minimum Future Average
+                </td>
+                <td>
+                    Result with Future 0
+                </td>
+                <td>
+                    Better?
+                </td>
+            </tr>
+        </table>
+
+        <table>
+            <tr>
+                <td>
+        <div>
+        <canvas id="grade" width="40px" height="40px"></canvas>
+        </div>
+                </td>
+                <td>
+        <div>
+        <canvas id="current_average" width="40em" height="40em"></canvas>
+        </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+        <div>
+        <canvas id="min_future" width="40em" height="40em"></canvas>
+        </div>
+                </td>
+                <td>
+        <div>
+        <canvas id="future_0" width="40em" height="40em"></canvas>
+        </div>
+                </td>
+            </tr>
+        </table>
+
+    </body>
+</html>
